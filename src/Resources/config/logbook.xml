@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="logbook.logger" parent="logbook.logger_master" public="false">
+            <argument index="0">app</argument>
+        </service>
+
+        <service id="logger" alias="logbook.logger" />
+
+        <service id="Psr\Log\LoggerInterface" alias="logger" public="false" />
+
+        <service id="logbook.logger_master" class="Symfony\Bridge\Monolog\Logger" abstract="true">
+            <argument />
+        </service>
+
+        <service 
+            id="logbook.health_status"
+            class="Solvrtech\Symfony\Logbook\Command\HealthStatusCommand"
+        >
+            <argument type="service" id="parameter_bag" />
+            <tag name="console.command" />            
+        </service>
+    </services>
+</container>

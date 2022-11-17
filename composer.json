@@ -1,0 +1,35 @@
+{
+  "name": "solvrtech/symfony-logbook",
+  "description": "The Package provide integrate the client app into logbook app.",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Solvrtech\\Symfony\\Logbook\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "solvrtech"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "symfony/dependency-injection": "6.1.*",
+    "symfony/config": "6.1.*",
+    "symfony/http-client": "6.1.*",
+    "symfony/http-kernel": "6.1.*",
+    "symfony/monolog-bridge": "6.1.*",
+    "monolog/monolog": "3.2.*",
+    "symfony/console": "6.1.*"
+  },
+  "require-dev": {
+    "symfony/yaml": "6.1.*",
+    "symfony/phpunit-bridge": "6.1.*"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.x-dev"
+    }
+  }
+}
