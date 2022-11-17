@@ -83,7 +83,7 @@ class LoggerCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Create new logger from the logbook.logger_prototype
+     * Create new logger from the logbook.logger_master
      *
      * @param string $channel
      * @param string $loggerId
@@ -92,7 +92,7 @@ class LoggerCompilerPass implements CompilerPassInterface
     protected function createLogger($channel, $loggerId, ContainerBuilder $container): void
     {
         if (!in_array($channel, $this->channels)) {
-            $logger = new ChildDefinition('logbook.logger_prototype');
+            $logger = new ChildDefinition('logbook.logger_master');
 
             $logger->replaceArgument(0, $channel);
             $container->setDefinition($loggerId, $logger);
