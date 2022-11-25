@@ -67,18 +67,26 @@ class LoggerCompilerPass implements CompilerPassInterface
         }
 
         // wire handler to channels
-        $handler = $container->getParameter('logbook.handler');
         foreach ($this->channels as $channel) {
             try {
                 $logger = $container->getDefinition(
-                    $channel === 'app' ?
+                    'app' === $channel ?
                         'logbook.logger' :
                         'logbook.logger.' . $channel
                 );
             } catch (InvalidArgumentException $e) {
                 throw new \InvalidArgumentException();
             }
-            $logger->addMethodCall('pushHandler', [new Reference($handler)]);
+
+            // push handler
+            $logger->addMethodCall('pushHandler', [
+                new Reference($container->getParameter('logbook.handler'))
+            ]);
+
+            // push processor
+            $$logger->addMethodCall('pushProcessor', [
+                new Reference($container->getParameter('logbook.processor'))
+            ]);
         }
     }
 
