@@ -84,7 +84,7 @@ class LoggerCompilerPass implements CompilerPassInterface
             ]);
 
             // push processor
-            $$logger->addMethodCall('pushProcessor', [
+            $logger->addMethodCall('pushProcessor', [
                 new Reference($container->getParameter('logbook.processor'))
             ]);
         }
