@@ -20,10 +20,11 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->arrayNode('api')
             ->children()
-            ->scalarNode('url')->end()
-            ->scalarNode('key')->end()
+            ->scalarNode('url')->isRequired()->end()
+            ->scalarNode('key')->isRequired()->end()
             ->end()
             ->end()
+            ->scalarNode('level')->isRequired()->end()
             ->end();
 
         return $treeBuilder;

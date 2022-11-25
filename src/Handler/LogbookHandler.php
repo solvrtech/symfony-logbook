@@ -4,9 +4,8 @@ namespace Solvrtech\Symfony\Logbook\Handler;
 
 use Exception;
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Formatter\JsonFormatter;
+use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Level;
 use Monolog\LogRecord;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -14,17 +13,21 @@ class LogbookHandler extends AbstractProcessingHandler
 {
     private ?string $url;
     private ?string $key;
+    private ?string $minLevel;
+    private ?string $appVersion;
 
     public function __construct(
         string $url,
         string $key,
-        int|string|Level $level = Level::Debug,
-        bool $bubble = true
+        string $minLevel,
+        string $appVersion
     ) {
         $this->url = $url;
         $this->key = $key;
+        $this->minLevel = $minLevel;
+        $this->appVersion = $appVersion;
 
-        parent::__construct($level, $bubble);
+        parent::__construct();
     }
 
     /**
@@ -35,20 +38,23 @@ class LogbookHandler extends AbstractProcessingHandler
     protected function write(LogRecord $record): void
     {
         $httpClient = HttpClient::create();
-        try {
-            $httpClient->request(
-                'POST',
-                "{$this->getAPIUrl()}/api/log/save",
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                        'token' => $this->getAPIkey(),
-                    ],
-                    'body' => $record['formatted'],
-                ]
-            );
-        } catch (Exception $e) {
+        if ($this->getMinLevel() <= $this->toIntLevel($record['level_name'])) {
+            try {
+                $httpClient->request(
+                    'POST',
+                    "{$this->getAPIUrl()}/api/log/save",
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/json',
+                            'Accept' => 'application/json',
+                            'x-lb-token' => $this->getAPIkey(),
+                            'x-lb-version' => $this->appVersion
+                        ],
+                        'body' => json_encode($record['formatted']),
+                    ]
+                );
+            } catch (Exception $e) {
+            }
         }
     }
 
@@ -85,10 +91,52 @@ class LogbookHandler extends AbstractProcessingHandler
     }
 
     /**
+     * Get the minimum log level allowed to be stored from environment.
+     * 
+     * @return int
+     */
+    private function getMinLevel(): int
+    {
+        if (null !== $this->minLevel) {
+            return $this->toIntLevel($this->minLevel);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Translate log level into int level
+     * 
+     * @param string $level
+     * 
+     * @return int
+     */
+    private function toIntLevel(string $level): int
+    {
+        $intLevel = 0;
+
+        try {
+            $intLevel = match (strtolower($level)) {
+                'debug' => 0,
+                'info' => 1,
+                'notice' => 2,
+                'warning' => 3,
+                'error' => 4,
+                'critical' => 5,
+                'alert' => 6,
+                'emergency' => 7
+            };
+        } catch (Exception $e) {
+        }
+
+        return $intLevel;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new JsonFormatter();
+        return new NormalizerFormatter();
     }
 }
