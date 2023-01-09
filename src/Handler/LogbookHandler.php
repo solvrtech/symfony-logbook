@@ -4,10 +4,11 @@ namespace Solvrtech\Symfony\Logbook\Handler;
 
 use Exception;
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
+use Solvrtech\Symfony\Logbook\Formatter\LogbookFormatter;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class LogbookHandler extends AbstractProcessingHandler
 {
@@ -33,7 +34,7 @@ class LogbookHandler extends AbstractProcessingHandler
     /**
      * @inheritDoc
      *
-     * @throws Exception
+     * @throws Exception|TransportExceptionInterface
      */
     protected function write(LogRecord $record): void
     {
@@ -48,7 +49,7 @@ class LogbookHandler extends AbstractProcessingHandler
                             'Content-Type' => 'application/json',
                             'Accept' => 'application/json',
                             'x-lb-token' => $this->getAPIkey(),
-                            'x-lb-version' => $this->appVersion
+                            'x-lb-version' => $this->appVersion,
                         ],
                         'body' => json_encode($record['formatted']),
                     ]
@@ -56,6 +57,48 @@ class LogbookHandler extends AbstractProcessingHandler
             } catch (Exception $e) {
             }
         }
+    }
+
+    /**
+     * Get the minimum log level allowed to be stored from environment.
+     *
+     * @return int
+     */
+    private function getMinLevel(): int
+    {
+        if (null !== $this->minLevel) {
+            return $this->toIntLevel($this->minLevel);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Translate log level into int level
+     *
+     * @param string $level
+     *
+     * @return int
+     */
+    private function toIntLevel(string $level): int
+    {
+        $intLevel = 0;
+
+        try {
+            $intLevel = match (strtolower($level)) {
+                'debug' => 0,
+                'info' => 1,
+                'notice' => 2,
+                'warning' => 3,
+                'error' => 4,
+                'critical' => 5,
+                'alert' => 6,
+                'emergency' => 7
+            };
+        } catch (Exception $e) {
+        }
+
+        return $intLevel;
     }
 
     /**
@@ -91,52 +134,10 @@ class LogbookHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Get the minimum log level allowed to be stored from environment.
-     * 
-     * @return int
-     */
-    private function getMinLevel(): int
-    {
-        if (null !== $this->minLevel) {
-            return $this->toIntLevel($this->minLevel);
-        }
-
-        return 0;
-    }
-
-    /**
-     * Translate log level into int level
-     * 
-     * @param string $level
-     * 
-     * @return int
-     */
-    private function toIntLevel(string $level): int
-    {
-        $intLevel = 0;
-
-        try {
-            $intLevel = match (strtolower($level)) {
-                'debug' => 0,
-                'info' => 1,
-                'notice' => 2,
-                'warning' => 3,
-                'error' => 4,
-                'critical' => 5,
-                'alert' => 6,
-                'emergency' => 7
-            };
-        } catch (Exception $e) {
-        }
-
-        return $intLevel;
-    }
-
-    /**
      * @inheritdoc
      */
     protected function getDefaultFormatter(): FormatterInterface
     {
-        return new NormalizerFormatter();
+        return new LogbookFormatter();
     }
 }
