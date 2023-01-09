@@ -2,29 +2,32 @@
 
 namespace Solvrtech\Symfony\Logbook\Processor;
 
+use ArrayAccess;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
+use Solvrtech\Symfony\Logbook\Model\ClientModel;
+use UnexpectedValueException;
 
 class LogbookProcessor implements ProcessorInterface
 {
-    private array $serverData;
+    private const URL = "REQUEST_URI";
+    private const IP = "REMOTE_ADDR";
+    private const HTTP_METHOD = "REQUEST_METHOD";
+    private const SERVER = "SERVER_NAME";
+    private const USER_AGENT = "HTTP_USER_AGENT";
 
-    private array $extraFields = [
-        'url' => 'REQUEST_URI',
-        'ip' => 'REMOTE_ADDR',
-        'httpMethod' => 'REQUEST_METHOD',
-        'server' => 'SERVER_NAME',
-        'userAgent' => 'HTTP_USER_AGENT',
-    ];
+    private array $serverData;
 
     public function __construct($serverData = null)
     {
         if (null === $serverData) {
             $this->serverData = &$_SERVER;
-        } elseif (is_array($serverData) || $serverData instanceof \ArrayAccess) {
+        } elseif (is_array($serverData) || $serverData instanceof ArrayAccess) {
             $this->serverData = $serverData;
         } else {
-            throw new \UnexpectedValueException('$serverData must be an array or object implementing ArrayAccess.');
+            throw new UnexpectedValueException(
+                '$serverData must be an array or object implementing ArrayAccess.'
+            );
         }
     }
 
@@ -45,17 +48,21 @@ class LogbookProcessor implements ProcessorInterface
 
     /**
      * Append extra fields to record array
-     * 
-     * @param  array $extra
-     * 
+     *
+     * @param array $extra
+     *
      * @return array
      */
     private function appendExtraFields(array $extra): array
     {
-        foreach ($this->extraFields as $key => $val) {
-            $extra[$key] = $this->serverData[$val] ?? null;
-        }
-
-        return $extra;
+        return [
+            'additional' => $extra,
+            'client' => (new ClientModel())
+                ->setUrl($this->serverData[self::URL])
+                ->setServer($this->serverData[self::SERVER])
+                ->setHttpMethod($this->serverData[self::HTTP_METHOD])
+                ->setIp($this->serverData[self::IP])
+                ->setUserAgent($this->serverData[self::USER_AGENT]),
+        ];
     }
 }

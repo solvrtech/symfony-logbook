@@ -22,7 +22,7 @@ class LogbookExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         if (isset($config['api'])) {
-            $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+            $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('logbook.xml');
 
             $this->setLogbookAPI($config['api']);
@@ -33,46 +33,6 @@ class LogbookExtension extends Extension
         }
 
         $container->setParameter('logbook.processor', $this->buildProcessor($container));
-    }
-
-    /**
-     * Build logbook handler
-     * 
-     * @param string $minLevel
-     * @param ContainerBuilder $container
-     * 
-     * @return string
-     */
-    public function buildHandler(string $minLevel, ContainerBuilder $container): string
-    {
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Handler\LogbookHandler');
-        $definition->setArguments([
-            $this->logbookAPI['url'],
-            $this->logbookAPI['key'],
-            $minLevel,
-            $this->getAppVersion($container)
-        ]);
-
-        $id = 'logbook.handler';
-        $container->setDefinition($id, $definition);
-
-        return $id;
-    }
-
-    /**
-     * Build logbook processor
-     * 
-     * @param ContainerBuilder $container
-     * 
-     * @return string
-     */
-    public function buildProcessor(ContainerBuilder $container): string
-    {
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Processor\LogbookProcessor');
-        $id = 'logbook.processor';
-        $container->setDefinition($id, $definition);
-
-        return $id;
     }
 
     private function setLogbookAPI(array $config): self
@@ -92,23 +52,63 @@ class LogbookExtension extends Extension
     }
 
     /**
-     * Get app and framework version.
-     * 
+     * Build logbook handler
+     *
+     * @param string $minLevel
      * @param ContainerBuilder $container
-     * 
+     *
+     * @return string
+     */
+    public function buildHandler(string $minLevel, ContainerBuilder $container): string
+    {
+        $definition = new Definition('Solvrtech\Symfony\Logbook\Handler\LogbookHandler');
+        $definition->setArguments([
+            $this->logbookAPI['url'],
+            $this->logbookAPI['key'],
+            $minLevel,
+            $this->getAppVersion($container),
+        ]);
+
+        $id = 'logbook.handler';
+        $container->setDefinition($id, $definition);
+
+        return $id;
+    }
+
+    /**
+     * Get app and framework version.
+     *
+     * @param ContainerBuilder $container
+     *
      * @return string
      */
     private function getAppVersion(ContainerBuilder $container): string
     {
-        $vesion = [
-            'symfony' => Kernel::VERSION
+        $version = [
+            'core' => "Symfony v".Kernel::VERSION,
         ];
 
         $appVersion = $container->getParameter('version');
-        if (null !== $appVersion && is_string($appVersion)) {
-            $vesion['app'] = $appVersion;
+        if (is_string($appVersion)) {
+            $version['app'] = $appVersion;
         }
 
-        return json_encode($vesion);
+        return json_encode($version);
+    }
+
+    /**
+     * Build logbook processor
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return string
+     */
+    public function buildProcessor(ContainerBuilder $container): string
+    {
+        $definition = new Definition('Solvrtech\Symfony\Logbook\Processor\LogbookProcessor');
+        $id = 'logbook.processor';
+        $container->setDefinition($id, $definition);
+
+        return $id;
     }
 }
