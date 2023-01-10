@@ -4,6 +4,7 @@ namespace Solvrtech\Symfony\Logbook\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\LogRecord;
+use Solvrtech\Symfony\Logbook\Model\ClientModel;
 use Solvrtech\Symfony\Logbook\Model\LogModel;
 use Throwable;
 
@@ -34,6 +35,7 @@ class LogbookFormatter implements FormatterInterface
     public function format(LogRecord $record)
     {
         $this->normalizeContext($record->context);
+        $extra = $record->extra;
 
         return $this->logModel
             ->setMessage($record->message)
@@ -41,8 +43,16 @@ class LogbookFormatter implements FormatterInterface
             ->setLevel($record->level->getName())
             ->setChannel($record->channel)
             ->setDatetime($record->datetime)
-            ->setAdditional($record->extra['additional'])
-            ->setClient($record->extra['client']);
+            ->setAdditional(
+                array_key_exists('additional', $extra) ?
+                    $extra['additional'] :
+                    []
+            )
+            ->setClient(
+                array_key_exists('client', $extra) ?
+                    $extra['client'] :
+                    new ClientModel()
+            );
     }
 
     /**
