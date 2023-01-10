@@ -42,7 +42,7 @@ class LogbookFormatter implements FormatterInterface
             ->setChannel($record->channel)
             ->setDatetime($record->datetime)
             ->setAdditional($record->extra['additional'])
-            ->setClientModel($record->extra['client']);
+            ->setClient($record->extra['client']);
     }
 
     /**
