@@ -20,7 +20,7 @@ class LogModel
 
     public ?array $additional = null;
 
-    public ?ClientModel $clientModel = null;
+    public ?ClientModel $client = null;
 
     public function getMessage(): ?string
     {
@@ -118,14 +118,14 @@ class LogModel
         return $this;
     }
 
-    public function getClientModel(): ?ClientModel
+    public function getClient(): ?ClientModel
     {
-        return $this->clientModel;
+        return $this->client;
     }
 
-    public function setClientModel(?ClientModel $clientModel): self
+    public function setClient(?ClientModel $client): self
     {
-        $this->clientModel = $clientModel;
+        $this->client = $client;
 
         return $this;
     }
