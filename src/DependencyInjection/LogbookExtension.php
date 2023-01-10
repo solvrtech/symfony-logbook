@@ -88,9 +88,9 @@ class LogbookExtension extends Extension
             'core' => "Symfony v".Kernel::VERSION,
         ];
 
-        $appVersion = $container->getParameter('version');
-        if (is_string($appVersion)) {
-            $version['app'] = $appVersion;
+        if ($container->hasParameter('version')) {
+            $appVersion = $container->getParameter('version');
+            $version['app'] = is_string($appVersion) ? $appVersion : '';
         }
 
         return json_encode($version);
