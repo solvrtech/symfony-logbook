@@ -36,7 +36,7 @@ class LogbookHandler extends AbstractProcessingHandler
      *
      * @throws Exception|TransportExceptionInterface
      */
-    protected function write(LogRecord $record): void
+    protected function write(LogRecord|array $record): void
     {
         $httpClient = HttpClient::create();
         if ($this->getMinLevel() <= $this->toIntLevel($record['level_name'])) {
