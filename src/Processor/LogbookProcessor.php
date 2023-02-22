@@ -34,7 +34,7 @@ class LogbookProcessor implements ProcessorInterface
     /**
      * {@inheritDoc}
      */
-    public function __invoke(LogRecord $record): LogRecord
+    public function __invoke(LogRecord|array $record): LogRecord|array
     {
         // skip processing if for some reason request data
         if (!isset($this->serverData['REQUEST_URI'])) {
