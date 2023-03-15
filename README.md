@@ -18,7 +18,7 @@ App version config
 
 ```bash
 
-/config/service.yaml
+/config/services.yaml
 
 parameters:
   version: "1.0.0"
