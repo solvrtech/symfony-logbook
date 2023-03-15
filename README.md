@@ -13,3 +13,13 @@ LOGBOOK_API_KEY="4eaa39a6ff57c4d5b2cd0a01297e219e323380ea43ef2565b4774d710f727dd
 LOGBOOK_LEVEL=DEBUG
 ###< solvrtech/symfony-logbook ###
 ```
+
+App version config
+
+```bash
+
+/config/service.yaml
+
+parameters:
+  version: "1.0.0"
+```
