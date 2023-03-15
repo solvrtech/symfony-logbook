@@ -1,7 +1,32 @@
 # symfony-logbook
 
+Intallitation
 ```bash
 composer require solvrtech/symfony-logbook
+```
+
+Configuration
+```bash
+/config/packages/logbook.yaml
+
+logbook:
+  api:
+    # The base url of logbook app.
+    url: "%env(LOGBOOK_API_URL)%"
+    
+    # The key of logbook client app.
+    key: "%env(LOGBOOK_API_KEY)%"
+
+  # The minimum log level allowed to be stored.
+  # DEBUG
+  # INFO
+  # NOTICE
+  # WARNING
+  # ERROR
+  # CRITICAL
+  # ALERT
+  # EMERGENCY
+  level: "%env(LOGBOOK_LEVEL)%"
 ```
 
 ```bash
@@ -14,10 +39,7 @@ LOGBOOK_LEVEL=DEBUG
 ###< solvrtech/symfony-logbook ###
 ```
 
-App version config
-
 ```bash
-
 /config/services.yaml
 
 parameters:
