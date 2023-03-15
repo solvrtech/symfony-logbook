@@ -1,6 +1,6 @@
 # symfony-logbook
 
-Intallitation
+Installitation
 ```bash
 composer require solvrtech/symfony-logbook
 ```
