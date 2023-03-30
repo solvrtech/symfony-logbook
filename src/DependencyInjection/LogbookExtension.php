@@ -28,19 +28,12 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        if (isset($config['api']) && !empty($this->handler)) {
+        if (isset($config['api'])) {
             $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('logbook.xml');
 
             $this->setLogbookAPI($config['api']);
-
-            switch ($this->handler['type']) {
-                case 'stream':
-                case 'console':
-                    $this->buildHandler($container);
-                    break;
-            }
-
+            $this->buildHandler($container);
             $this->buildProcessor($container);
         }
     }
