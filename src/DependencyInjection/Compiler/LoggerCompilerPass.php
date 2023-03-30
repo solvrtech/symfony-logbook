@@ -16,19 +16,21 @@ class LoggerCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $this->createLogger($container);
+        if ($container->hasParameter('monolog.handler.logbook')) {
+            $this->createLogger($container);
 
-        // push handler
-        $logger = $container->getDefinition('monolog.logger.logbook');
-        $logger->addMethodCall('pushHandler', [
-            new Reference($container->getParameter('monolog.handler.logbook')),
-        ]);
+            // push handler
+            $logger = $container->getDefinition('monolog.logger.logbook');
+            $logger->addMethodCall('pushHandler', [
+                new Reference($container->getParameter('monolog.handler.logbook')),
+            ]);
 
-        // push processor
-        $definition = $container->findDefinition('monolog.handler.logbook');
-        $definition->addMethodCall('pushProcessor', [
-            new Reference($container->getParameter('logbook.processor')),
-        ]);
+            // push processor
+            $definition = $container->findDefinition('monolog.handler.logbook');
+            $definition->addMethodCall('pushProcessor', [
+                new Reference($container->getParameter('logbook.processor')),
+            ]);
+        }
     }
 
     /**
