@@ -36,7 +36,7 @@ class HealthStatusCommand extends Command
 
         if ($this->parameterBag->has('logbook.logbook_api')) {
             $logbookApi = $this->parameterBag->get('logbook.logbook_api');
-            $appVersion = $this->parameterBag->get('logbook.app_version');
+            $appVersion = $this->parameterBag->get('version');
 
             try {
                 $httpClient->request(
@@ -47,8 +47,8 @@ class HealthStatusCommand extends Command
                             'Content-Type' => 'application/json',
                             'Accept' => 'application/json',
                             'x-lb-token' => $logbookApi['key'],
-                            'x-lb-version' => $appVersion
-                        ]
+                            'x-lb-version' => $appVersion,
+                        ],
                     ]
                 );
             } catch (Exception $e) {
