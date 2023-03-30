@@ -13,7 +13,7 @@ monolog:
   handlers:
     logbook:
       type: stream
-      levele: debug
+      level: debug
 ```
 
 ```bash
