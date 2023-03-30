@@ -5,7 +5,7 @@ Installitation
 composer require solvrtech/symfony-logbook
 ```
 
-Configuration
+Configuration<br>
 Enable the bundle by adding it to the list of registered bundles
 in the `config/bundles.php` file
 ```bash
