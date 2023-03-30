@@ -34,6 +34,7 @@ logbook:
 
 monolog:
   handlers:
+    // ...
     logbook:
       type: stream
       level: debug
