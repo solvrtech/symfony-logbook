@@ -9,7 +9,7 @@ Configuration<br>
 Enable the bundle by adding it to the list of registered bundles
 in the `config/bundles.php` file
 ```bash
-/config/bundles.php
+// config/bundles.php
 
 return [
   // ...
@@ -18,7 +18,7 @@ return [
 ```
 
 ```bash
-/config/packages/logbook.yaml
+// config/packages/logbook.yaml
 
 logbook:
   api:
@@ -30,7 +30,7 @@ logbook:
 ```
 
 ```bash
-/config/packages/monolog.yaml
+// config/packages/monolog.yaml
 
 monolog:
   handlers:
@@ -41,7 +41,7 @@ monolog:
 ```
 
 ```bash
-/config/services.yaml
+// config/services.yaml
 
 parameters:
   version: "1.0.0"
