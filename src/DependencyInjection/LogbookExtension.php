@@ -2,37 +2,47 @@
 
 namespace Solvrtech\Symfony\Logbook\DependencyInjection;
 
+use Exception;
+use ReflectionException;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\HttpKernel\Kernel;
 
-class LogbookExtension extends Extension
+class LogbookExtension extends Extension implements PrependExtensionInterface
 {
     private array $logbookAPI;
+    private array $handler;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        if (isset($config['api'])) {
+        if (isset($config['api']) && !empty($this->handler)) {
             $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('logbook.xml');
 
             $this->setLogbookAPI($config['api']);
 
-            $container->setParameter('logbook.handler', $this->buildHandler($config['level'], $container));
-            $container->setParameter('logbook.logbook_api', $this->logbookAPI);
-            $container->setParameter('logbook.app_version', $this->getAppVersion($container));
-        }
+            switch ($this->handler['type']) {
+                case 'stream':
+                case 'console':
+                    $this->buildHandler($container);
+                    break;
+            }
 
-        $container->setParameter('logbook.processor', $this->buildProcessor($container));
+            $this->buildProcessor($container);
+        }
     }
 
     private function setLogbookAPI(array $config): self
@@ -54,25 +64,21 @@ class LogbookExtension extends Extension
     /**
      * Build logbook handler
      *
-     * @param string $minLevel
      * @param ContainerBuilder $container
-     *
-     * @return string
      */
-    public function buildHandler(string $minLevel, ContainerBuilder $container): string
+    public function buildHandler(ContainerBuilder $container)
     {
+        $id = 'monolog.handler.logbook';
+
         $definition = new Definition('Solvrtech\Symfony\Logbook\Handler\LogbookHandler');
         $definition->setArguments([
             $this->logbookAPI['url'],
             $this->logbookAPI['key'],
-            $minLevel,
+            $this->handler['level'],
             $this->getAppVersion($container),
         ]);
-
-        $id = 'logbook.handler';
+        $container->setParameter($id, $id);
         $container->setDefinition($id, $definition);
-
-        return $id;
     }
 
     /**
@@ -100,15 +106,47 @@ class LogbookExtension extends Extension
      * Build logbook processor
      *
      * @param ContainerBuilder $container
-     *
-     * @return string
      */
-    public function buildProcessor(ContainerBuilder $container): string
+    public function buildProcessor(ContainerBuilder $container)
     {
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Processor\LogbookProcessor');
         $id = 'logbook.processor';
-        $container->setDefinition($id, $definition);
 
-        return $id;
+        $definition = new Definition('Solvrtech\Symfony\Logbook\Processor\LogbookProcessor');
+        $container->setParameter($id, $id);
+        $container->setDefinition($id, $definition);
+    }
+
+    /**
+     * {@inheritDoc}
+     * {monologConfiguration}
+     *
+     * @throws ReflectionException
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        $configs = $container->getExtensionConfig('monolog');
+        $monologConfiguration = $this->getMonologConfiguration($container);
+        $config = $this->processConfiguration($monologConfiguration, $configs);
+
+        if (isset($config['handlers'])) {
+            $this->handler = $config['handlers']['logbook'] ?? [];
+        }
+    }
+
+    /**
+     * Get monolog bundle configuration
+     *
+     * @param ContainerBuilder $containerBuilder
+     *
+     * @return Configuration|null
+     *
+     * @throws ReflectionException
+     */
+    private function getMonologConfiguration(ContainerBuilder $containerBuilder): ConfigurationInterface|null
+    {
+        $class = "Symfony\Bundle\MonologBundle\DependencyInjection\Configuration";
+        $class = $containerBuilder->getReflectionClass($class);
+
+        return $class->newInstance();
     }
 }

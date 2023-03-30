@@ -8,8 +8,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * @inheritDoc
-     * 
+     * {@inheritDoc}
+     *
      * @return TreeBuilder
      */
     public function getConfigTreeBuilder(): TreeBuilder
@@ -23,8 +23,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('url')->isRequired()->end()
             ->scalarNode('key')->isRequired()->end()
             ->end()
-            ->end()
-            ->scalarNode('level')->isRequired()->end()
             ->end();
 
         return $treeBuilder;
