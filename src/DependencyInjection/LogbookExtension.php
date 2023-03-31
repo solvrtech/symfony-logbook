@@ -33,8 +33,11 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
             $loader->load('logbook.xml');
 
             $this->setLogbookAPI($config['api']);
-            $this->buildHandler($container);
-            $this->buildProcessor($container);
+
+            if (!empty($this->handler)) {
+                $this->buildHandler($container);
+                $this->buildProcessor($container);
+            }
         }
     }
 
