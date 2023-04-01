@@ -25,7 +25,7 @@ logbook:
     # The base url of logbook app.
     url: "https://logbook.com"
     
-    # The key of logbook client app.
+    # The API key of logbook client app.
     key: "4eaa39a6ff57c4d5b2cd0a..."
 ```
 
