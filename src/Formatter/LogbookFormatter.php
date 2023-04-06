@@ -34,15 +34,15 @@ class LogbookFormatter implements FormatterInterface
      */
     public function format(LogRecord|array $record): LogModel
     {
-        $this->normalizeContext($record->context);
-        $extra = $record->extra;
+        $this->normalizeContext($record['context']);
+        $extra = $record['extra'];
 
         return $this->logModel
-            ->setMessage($record->message)
-            ->setCode($record->level->value)
-            ->setLevel($record->level->getName())
-            ->setChannel($record->channel)
-            ->setDatetime($record->datetime)
+            ->setMessage($record['message'])
+            ->setCode($record['level'])
+            ->setLevel($record['level_name'])
+            ->setChannel($record['channel'])
+            ->setDatetime($record['datetime'])
             ->setAdditional(
                 array_key_exists('additional', $extra) ?
                     $extra['additional'] :
