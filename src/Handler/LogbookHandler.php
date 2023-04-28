@@ -1,12 +1,12 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Handler;
+namespace Solvrtech\Logbook\Handler;
 
 use Exception;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
-use Solvrtech\Symfony\Logbook\Formatter\LogbookFormatter;
+use Solvrtech\Logbook\Formatter\LogbookFormatter;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 

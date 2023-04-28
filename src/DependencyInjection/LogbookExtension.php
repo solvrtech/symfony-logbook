@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\DependencyInjection;
+namespace Solvrtech\Logbook\DependencyInjection;
 
 use Exception;
 use ReflectionException;
@@ -9,7 +9,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -29,8 +29,8 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
         $config = $this->processConfiguration($configuration, $configs);
 
         if (isset($config['api'])) {
-            $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-            $loader->load('logbook.xml');
+            $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('logbook.yaml');
 
             $this->setLogbookAPI($config['api']);
 
@@ -38,6 +38,8 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
                 $this->buildHandler($container);
                 $this->buildProcessor($container);
             }
+
+            $this->buildAuthenticator($container);
         }
     }
 
@@ -66,7 +68,7 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $id = 'monolog.handler.logbook';
 
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Handler\LogbookHandler');
+        $definition = new Definition('Solvrtech\Logbook\Handler\LogbookHandler');
         $definition->setArguments([
             $this->logbookAPI['url'],
             $this->logbookAPI['key'],
@@ -107,7 +109,24 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $id = 'logbook.processor';
 
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Processor\LogbookProcessor');
+        $definition = new Definition('Solvrtech\Logbook\Processor\LogbookProcessor');
+        $container->setParameter($id, $id);
+        $container->setDefinition($id, $definition);
+    }
+
+    /**
+     * Build Logbook authenticator
+     *
+     * @param ContainerBuilder $container
+     */
+    public function buildAuthenticator(ContainerBuilder $container)
+    {
+        $id = 'logbook.authenticator';
+
+        $definition = new Definition('Solvrtech\Logbook\Security\LogbookAuthenticator');
+        $definition->setArguments([
+            $this->logbookAPI['key'],
+        ]);
         $container->setParameter($id, $id);
         $container->setDefinition($id, $definition);
     }

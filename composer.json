@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Solvrtech\\Symfony\\Logbook\\": "src/"
+            "Solvrtech\\Logbook\\": "src/"
         }
     },
     "authors": [
@@ -23,7 +23,13 @@
         "symfony/monolog-bridge": "~5.0|~6.0",
         "symfony/monolog-bundle": "^3.8",
         "monolog/monolog": "^2|^3",
-        "symfony/console": "~5.0|~6.0"
+        "symfony/console": "~5.0|~6.0",
+        "symfony/cache": "~5.0|~6.0",
+        "symfony/security-bundle": "~5.0|~6.0",
+        "doctrine/doctrine-bundle": "^2.9",
+        "ketut/random-string": "^1.0",
+        "symfony/process": "~5.0|~6.0",
+        "doctrine/orm": "^2.11"
     },
     "require-dev": {
         "symfony/yaml": "~5.0|~6.0",
