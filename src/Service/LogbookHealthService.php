@@ -2,6 +2,8 @@
 
 namespace Solvrtech\Symfony\Logbook\Service;
 
+use DateTime;
+use Solvrtech\Symfony\Logbook\Check\CheckInterface;
 use Solvrtech\Symfony\Logbook\LogbookHealth;
 
 class LogbookHealthService
@@ -13,14 +15,20 @@ class LogbookHealthService
         $this->health = $health;
     }
 
+    /**
+     * Get all health check results.
+     *
+     * @return array
+     */
     public function getResults(): array
     {
-        $checks = [];
+        $results = array_map(function (CheckInterface $check) {
+            return $check->result();
+        }, $this->health->getChecks());
 
-        foreach ($this->health->getChecks() as $check) {
-            $checks[] = $check->result();
-        }
-
-        return $checks;
+        return [
+            'datetime' => (new DateTime())->format('Y-m-d H:i:s'),
+            'checks' => $results
+        ];
     }
 }
