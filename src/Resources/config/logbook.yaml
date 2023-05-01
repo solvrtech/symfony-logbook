@@ -1,48 +1,48 @@
 services:
-    cache_check:
-        class: Solvrtech\Logbook\Check\CacheCheck
-        arguments:
-            - '@Symfony\Contracts\Cache\CacheInterface'
+  cache_check:
+    class: Solvrtech\Symfony\Logbook\Check\CacheCheck
+    arguments:
+      - '@Symfony\Contracts\Cache\CacheInterface'
 
-    cpu_load_check:
-        class: Solvrtech\Logbook\Check\CPULoadCheck
+  cpu_load_check:
+    class: Solvrtech\Symfony\Logbook\Check\CPULoadCheck
 
-    database_check:
-        class: Solvrtech\Logbook\Check\DataBaseCheck
-        arguments:
-            - '@Doctrine\ORM\EntityManagerInterface'
+  database_check:
+    class: Solvrtech\Symfony\Logbook\Check\DataBaseCheck
+    arguments:
+      - '@Doctrine\ORM\EntityManagerInterface'
 
-    memory_check:
-        class: Solvrtech\Logbook\Check\MemoryCheck
+  memory_check:
+    class: Solvrtech\Symfony\Logbook\Check\MemoryCheck
 
-    used_disk_check:
-        class: Solvrtech\Logbook\Check\UsedDiskCheck
+  used_disk_check:
+    class: Solvrtech\Symfony\Logbook\Check\UsedDiskCheck
 
-    redis_check:
-        class: Solvrtech\Logbook\Check\RedisCheck
-        arguments:
-            - '@Psr\Cache\CacheItemPoolInterface'
+  redis_check:
+    class: Solvrtech\Symfony\Logbook\Check\RedisCheck
+    arguments:
+      - '@Psr\Cache\CacheItemPoolInterface'
 
-    logbook_health:
-        class: Solvrtech\Logbook\LogbookHealth
-        arguments:
-            $checks:
-                cache: "@cache_check"
-                cpu_load: "@cpu_load_check"
-                database: "@database_check"
-                memory: "@memory_check"
-                used_disk: "@used_disk_check"
-                redis: "@redis_check"
+  logbook_health:
+    class: Solvrtech\Symfony\Logbook\LogbookHealth
+    arguments:
+      $checks:
+        cache: "@cache_check"
+        cpu_load: "@cpu_load_check"
+        database: "@database_check"
+        memory: "@memory_check"
+        used_disk: "@used_disk_check"
+        redis: "@redis_check"
 
-    logbook_health_service:
-        class: Solvrtech\Logbook\Service\LogbookHealthService
-        arguments:
-            - "@logbook_health"
+  logbook_health_service:
+    class: Solvrtech\Symfony\Logbook\Service\LogbookHealthService
+    arguments:
+      - "@logbook_health"
 
-    Solvrtech\Logbook\Controller\LogbookHealthController:
-        arguments:
-            - "@logbook_health_service"
-        tags:
-            - { name: controller.service_arguments }
+  Solvrtech\Symfony\Logbook\Controller\LogbookHealthController:
+    arguments:
+      - "@logbook_health_service"
+    tags:
+      - { name: controller.service_arguments }
 
-    Solvrtech\Logbook\Security\LogbookUserProvider:
+  Solvrtech\Symfony\Logbook\Security\LogbookUserProvider:

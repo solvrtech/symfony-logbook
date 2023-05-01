@@ -1,11 +1,11 @@
 <?php
 
-namespace Solvrtech\Logbook\Check;
+namespace Solvrtech\Symfony\Logbook\Check;
 
 use Exception;
 use Psr\Cache\CacheItemPoolInterface;
-use Solvrtech\Logbook\Exception\LogbookHealthException;
-use Solvrtech\Logbook\Model\ConditionModel;
+use Solvrtech\Symfony\Logbook\Exception\LogbookHealthException;
+use Solvrtech\Symfony\Logbook\Model\ConditionModel;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class RedisCheck extends CheckService
@@ -72,7 +72,8 @@ class RedisCheck extends CheckService
     private function checkRedisConnection(RedisAdapter $redis): array
     {
         foreach ((array)$redis as $key => $val) {
-            if ($val instanceof \Redis ||
+            if (
+                $val instanceof \Redis ||
                 $val instanceof \RedisArray ||
                 $val instanceof \RedisCluster ||
                 $val instanceof \Predis\ClientInterface ||

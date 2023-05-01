@@ -1,11 +1,11 @@
 <?php
 
-namespace Solvrtech\Logbook\Processor;
+namespace Solvrtech\Symfony\Logbook\Processor;
 
 use ArrayAccess;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
-use Solvrtech\Logbook\Model\ClientModel;
+use Solvrtech\Symfony\Logbook\Model\ClientModel;
 use UnexpectedValueException;
 
 class LogbookProcessor implements ProcessorInterface

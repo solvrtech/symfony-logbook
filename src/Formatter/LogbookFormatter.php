@@ -1,11 +1,11 @@
 <?php
 
-namespace Solvrtech\Logbook\Formatter;
+namespace Solvrtech\Symfony\Logbook\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\LogRecord;
-use Solvrtech\Logbook\Model\ClientModel;
-use Solvrtech\Logbook\Model\LogModel;
+use Solvrtech\Symfony\Logbook\Model\ClientModel;
+use Solvrtech\Symfony\Logbook\Model\LogModel;
 use Throwable;
 
 class LogbookFormatter implements FormatterInterface

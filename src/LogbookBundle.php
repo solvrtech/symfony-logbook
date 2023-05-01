@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Logbook;
+namespace Solvrtech\Symfony\Logbook;
 
-use Solvrtech\Logbook\DependencyInjection\Compiler\LoggerCompilerPass;
+use Solvrtech\Symfony\Logbook\DependencyInjection\Compiler\LoggerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

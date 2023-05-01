@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Logbook\Service;
+namespace Solvrtech\Symfony\Logbook\Service;
 
-use Solvrtech\Logbook\LogbookHealth;
+use Solvrtech\Symfony\Logbook\LogbookHealth;
 
 class LogbookHealthService
 {

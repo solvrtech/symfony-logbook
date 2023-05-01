@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Logbook\Security;
+namespace Solvrtech\Symfony\Logbook\Security;
 
-use Solvrtech\Logbook\Exception\LogbookSecurityException;
+use Solvrtech\Symfony\Logbook\Exception\LogbookSecurityException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -26,7 +26,7 @@ class LogbookAuthenticator extends AbstractAuthenticator
     public function supports(Request $request): ?bool
     {
         return $request->headers->has('logbook-key') &&
-        $request->getPathInfo() === '/logbook-health' ?:
+            $request->getPathInfo() === '/logbook-health' ?:
             throw new LogbookSecurityException();
     }
 
