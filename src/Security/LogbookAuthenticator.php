@@ -25,8 +25,7 @@ class LogbookAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has('logbook-key') &&
-            $request->getPathInfo() === '/logbook-health' ?:
+        return $request->headers->has('x-logbook-key') ?:
             throw new LogbookSecurityException();
     }
 
@@ -35,15 +34,15 @@ class LogbookAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        $credentials = $request->headers->get('logbook-key');
+        $givenKey = $request->headers->get('x-logbook-key');
 
-        if ($credentials !== $this->logbookKey) {
+        if ($this->logbookKey !== $givenKey) {
             throw new LogbookSecurityException();
         }
 
         return new SelfValidatingPassport(
             new UserBadge(
-                $credentials
+                $givenKey
             )
         );
     }
