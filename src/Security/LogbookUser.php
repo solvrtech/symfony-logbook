@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Logbook\Security;
+namespace Solvrtech\Symfony\Logbook\Security;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 

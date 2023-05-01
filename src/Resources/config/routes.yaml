@@ -1,4 +1,4 @@
 logbook_health:
-    path: /
-    controller: Solvrtech\Logbook\Controller\LogbookHealthController
-    methods: [ GET ]
+  path: /
+  controller: Solvrtech\Symfony\Logbook\Controller\LogbookHealthController
+  methods: [GET]

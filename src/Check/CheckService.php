@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Logbook\Check;
+namespace Solvrtech\Symfony\Logbook\Check;
 
-use Solvrtech\Logbook\Model\ConditionModel;
+use Solvrtech\Symfony\Logbook\Model\ConditionModel;
 
 abstract class CheckService implements CheckInterface
 {

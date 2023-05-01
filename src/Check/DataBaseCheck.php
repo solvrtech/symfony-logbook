@@ -1,12 +1,12 @@
 <?php
 
-namespace Solvrtech\Logbook\Check;
+namespace Solvrtech\Symfony\Logbook\Check;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Solvrtech\Logbook\Exception\LogbookHealthException;
-use Solvrtech\Logbook\Model\ConditionModel;
+use Solvrtech\Symfony\Logbook\Exception\LogbookHealthException;
+use Solvrtech\Symfony\Logbook\Model\ConditionModel;
 
 class DataBaseCheck extends CheckService
 {

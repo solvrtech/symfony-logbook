@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Logbook\DependencyInjection\Compiler;
+namespace Solvrtech\Symfony\Logbook\DependencyInjection\Compiler;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;

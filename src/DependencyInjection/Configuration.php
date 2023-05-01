@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Logbook\DependencyInjection;
+namespace Solvrtech\Symfony\Logbook\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Logbook\Model;
+namespace Solvrtech\Symfony\Logbook\Model;
 
 class ClientModel
 {

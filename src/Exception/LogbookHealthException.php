@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Logbook\Exception;
+namespace Solvrtech\Symfony\Logbook\Exception;
 
 use Exception;
 use Throwable;
