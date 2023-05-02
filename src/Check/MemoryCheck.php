@@ -39,9 +39,9 @@ class MemoryCheck extends CheckService
     /**
      * Get memory usage in Megabyte.
      *
-     * @return int
+     * @return float|int
      */
-    private function getMemoryUsage(): int
+    private function getMemoryUsage(): float|int
     {
         return round(memory_get_usage() / 1048576, 2);
     }

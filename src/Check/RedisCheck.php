@@ -7,6 +7,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Solvrtech\Symfony\Logbook\Exception\LogbookHealthException;
 use Solvrtech\Symfony\Logbook\Model\ConditionModel;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Component\Cache\Adapter\TraceableAdapter;
 
 class RedisCheck extends CheckService
 {
@@ -47,8 +48,11 @@ class RedisCheck extends CheckService
      */
     private function getRedisSize(): array
     {
-        $pool = $this->cachePool->getPool();
+        if (!$this->cachePool instanceof TraceableAdapter) {
+            throw new LogbookHealthException();
+        }
 
+        $pool = $this->cachePool->getPool();
         if (!$pool instanceof RedisAdapter) {
             throw new LogbookHealthException();
         }
