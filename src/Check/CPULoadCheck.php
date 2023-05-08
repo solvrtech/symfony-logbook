@@ -1,10 +1,10 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Check;
+namespace Solvrtech\Logbook\Check;
 
 use Exception;
-use Solvrtech\Symfony\Logbook\Exception\LogbookHealthException;
-use Solvrtech\Symfony\Logbook\Model\ConditionModel;
+use Solvrtech\Logbook\Exception\LogbookHealthException;
+use Solvrtech\Logbook\Model\ConditionModel;
 
 class CPULoadCheck extends CheckService
 {
@@ -17,7 +17,7 @@ class CPULoadCheck extends CheckService
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function run(): ConditionModel
     {

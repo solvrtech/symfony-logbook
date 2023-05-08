@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Security;
+namespace Solvrtech\Logbook\Security;
 
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;

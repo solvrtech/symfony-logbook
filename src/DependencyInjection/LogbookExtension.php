@@ -1,9 +1,10 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\DependencyInjection;
+namespace Solvrtech\Logbook\DependencyInjection;
 
 use Exception;
 use ReflectionException;
+use Solvrtech\Logbook\Model\LogbookConfig;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class LogbookExtension extends Extension implements PrependExtensionInterface
 {
-    private array $logbookAPI;
+    private LogbookConfig $logbookConfig;
     private array $handler;
 
     /**
@@ -28,33 +29,33 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        if (isset($config['api'])) {
-            $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-            $loader->load('logbook.yaml');
+        $this->setLogbookConfig($config);
 
-            $this->setLogbookAPI($config['api']);
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('logbook.yaml');
 
-            if (!empty($this->handler)) {
-                $this->buildHandler($container);
-                $this->buildProcessor($container);
-            }
-
-            $this->buildAuthenticator($container);
+        if (!empty($this->handler)) {
+            $this->buildHandler($container);
+            $this->buildProcessor($container);
         }
+
+        $this->buildAuthenticator($container);
+        $this->buildHealthService($container);
     }
 
-    private function setLogbookAPI(array $config): self
+    private function setLogbookConfig(array $config): self
     {
-        foreach ($config as $key => $val) {
-            if ('url' === $key) {
-                // check if the last character is a slash and then remove that one
-                if ('/' === substr($val, -1)) {
-                    $val = substr($val, 0, -1);
-                }
-            }
+        $logbookConfig = (new LogbookConfig())
+            ->setInstanceId($config['instance_id'])
+            ->setApiKey($config['api']['key']);
 
-            $this->logbookAPI[$key] = $val;
-        }
+        // check if the last character is a slash and then remove that one
+        $url = ('/' === substr($config['api']['url'], -1)) ?
+            substr($config['api']['url'], 0, -1) :
+            $config['api']['url'];
+
+        $logbookConfig->setApiUrl($url);
+        $this->logbookConfig = $logbookConfig;
 
         return $this;
     }
@@ -68,10 +69,9 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $id = 'monolog.handler.logbook';
 
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Handler\LogbookHandler');
+        $definition = new Definition('Solvrtech\Logbook\Handler\LogbookHandler');
         $definition->setArguments([
-            $this->logbookAPI['url'],
-            $this->logbookAPI['key'],
+            $this->logbookConfig,
             $this->handler['level'],
             $this->getAppVersion($container),
         ]);
@@ -89,7 +89,7 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     private function getAppVersion(ContainerBuilder $container): string
     {
         $version = [
-            'core' => "Symfony v" . Kernel::VERSION,
+            'core' => "Symfony v".Kernel::VERSION,
         ];
 
         if ($container->hasParameter('version')) {
@@ -109,7 +109,7 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $id = 'logbook.processor';
 
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Processor\LogbookProcessor');
+        $definition = new Definition('Solvrtech\Logbook\Processor\LogbookProcessor');
         $container->setParameter($id, $id);
         $container->setDefinition($id, $definition);
     }
@@ -123,12 +123,26 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $id = 'logbook.authenticator';
 
-        $definition = new Definition('Solvrtech\Symfony\Logbook\Security\LogbookAuthenticator');
+        $definition = new Definition('Solvrtech\Logbook\Security\LogbookAuthenticator');
         $definition->setArguments([
-            $this->logbookAPI['key'],
+            $this->logbookConfig->getApiKey(),
         ]);
         $container->setParameter($id, $id);
         $container->setDefinition($id, $definition);
+    }
+
+    /**
+     * Build LogbookHealth service
+     *
+     * @param ContainerBuilder $container
+     */
+    public function buildHealthService(ContainerBuilder $container)
+    {
+        $definition = $container->getDefinition('logbook_health_service');
+        $definition->replaceArgument(
+            1,
+            $this->logbookConfig->getInstanceId()
+        );
     }
 
     /**

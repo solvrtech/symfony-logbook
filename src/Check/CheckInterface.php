@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Check;
+namespace Solvrtech\Logbook\Check;
 
-use Solvrtech\Symfony\Logbook\Model\ConditionModel;
+use Solvrtech\Logbook\Model\ConditionModel;
 
 interface CheckInterface
 {

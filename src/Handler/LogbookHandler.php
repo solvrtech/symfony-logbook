@@ -1,30 +1,28 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Handler;
+namespace Solvrtech\Logbook\Handler;
 
 use Exception;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
-use Solvrtech\Symfony\Logbook\Formatter\LogbookFormatter;
+use Solvrtech\Logbook\Formatter\LogbookFormatter;
+use Solvrtech\Logbook\Model\LogbookConfig;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class LogbookHandler extends AbstractProcessingHandler
 {
-    private ?string $url;
-    private ?string $key;
+    private LogbookConfig $logbookConfig;
     private ?string $minLevel;
     private ?string $appVersion;
 
     public function __construct(
-        string $url,
-        string $key,
+        LogbookConfig $logbookConfig,
         string $minLevel,
         string $appVersion
     ) {
-        $this->url = $url;
-        $this->key = $key;
+        $this->logbookConfig = $logbookConfig;
         $this->minLevel = $minLevel;
         $this->appVersion = $appVersion;
 
@@ -110,11 +108,11 @@ class LogbookHandler extends AbstractProcessingHandler
      */
     private function getAPIUrl(): string
     {
-        if (null === $this->url) {
+        if (null === $this->logbookConfig->getApiUrl()) {
             throw new Exception('Logbook API url not found.');
         }
 
-        return $this->url;
+        return $this->logbookConfig->getApiUrl();
     }
 
     /**
@@ -126,15 +124,15 @@ class LogbookHandler extends AbstractProcessingHandler
      */
     private function getAPIkey(): string
     {
-        if (null === $this->key) {
+        if (null === $this->logbookConfig->getApiKey()) {
             throw new Exception('Logbook API key not found.');
         }
 
-        return $this->key;
+        return $this->logbookConfig->getApiKey();
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultFormatter(): FormatterInterface
     {

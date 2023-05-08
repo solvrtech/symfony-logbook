@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Controller;
+namespace Solvrtech\Logbook\Controller;
 
-use Solvrtech\Symfony\Logbook\Service\LogbookHealthService;
+use Solvrtech\Logbook\Service\LogbookHealthService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class LogbookHealthController

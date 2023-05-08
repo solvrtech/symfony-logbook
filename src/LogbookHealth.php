@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook;
+namespace Solvrtech\Logbook;
 
 class LogbookHealth
 {
