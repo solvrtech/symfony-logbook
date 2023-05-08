@@ -1,10 +1,10 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Check;
+namespace Solvrtech\Logbook\Check;
 
 use Exception;
 use Ketut\RandomString\Random;
-use Solvrtech\Symfony\Logbook\Model\ConditionModel;
+use Solvrtech\Logbook\Model\ConditionModel;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class CacheCheck extends CheckService
@@ -45,7 +45,7 @@ class CacheCheck extends CheckService
     private function canStoringItem(): bool
     {
         $expectedValue = (new Random)->lowercase()->length(5)->generate();
-        $key = 'logbook-health.check.' . self::getKey();
+        $key = 'logbook-health.check.'.self::getKey();
 
         // create a new item by trying to get it from the cache
         $actualValue = $this->cache->getItem($key);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Security;
+namespace Solvrtech\Logbook\Security;
 
-use Solvrtech\Symfony\Logbook\Exception\LogbookSecurityException;
+use Solvrtech\Logbook\Exception\LogbookSecurityException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

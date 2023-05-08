@@ -1,9 +1,9 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Check;
+namespace Solvrtech\Logbook\Check;
 
 use Exception;
-use Solvrtech\Symfony\Logbook\Model\ConditionModel;
+use Solvrtech\Logbook\Model\ConditionModel;
 
 class MemoryCheck extends CheckService
 {

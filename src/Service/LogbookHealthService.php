@@ -1,18 +1,22 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Service;
+namespace Solvrtech\Logbook\Service;
 
 use DateTime;
-use Solvrtech\Symfony\Logbook\Check\CheckInterface;
-use Solvrtech\Symfony\Logbook\LogbookHealth;
+use Solvrtech\Logbook\Check\CheckInterface;
+use Solvrtech\Logbook\LogbookHealth;
 
 class LogbookHealthService
 {
     private LogbookHealth $health;
+    private ?string $instanceId = null;
 
-    public function __construct(LogbookHealth $health)
-    {
+    public function __construct(
+        LogbookHealth $health,
+        string $instanceId = 'default'
+    ) {
         $this->health = $health;
+        $this->instanceId = $instanceId;
     }
 
     /**
@@ -28,7 +32,8 @@ class LogbookHealthService
 
         return [
             'datetime' => (new DateTime())->format('Y-m-d H:i:s'),
-            'checks' => $results
+            'instanceId' => $this->instanceId,
+            'checks' => $results,
         ];
     }
 }

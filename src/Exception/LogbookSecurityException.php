@@ -1,6 +1,6 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Exception;
+namespace Solvrtech\Logbook\Exception;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;

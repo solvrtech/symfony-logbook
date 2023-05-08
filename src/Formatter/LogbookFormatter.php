@@ -1,11 +1,11 @@
 <?php
 
-namespace Solvrtech\Symfony\Logbook\Formatter;
+namespace Solvrtech\Logbook\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\LogRecord;
-use Solvrtech\Symfony\Logbook\Model\ClientModel;
-use Solvrtech\Symfony\Logbook\Model\LogModel;
+use Solvrtech\Logbook\Model\ClientModel;
+use Solvrtech\Logbook\Model\LogModel;
 use Throwable;
 
 class LogbookFormatter implements FormatterInterface
@@ -18,7 +18,7 @@ class LogbookFormatter implements FormatterInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function formatBatch(array $records): array
     {
@@ -30,7 +30,7 @@ class LogbookFormatter implements FormatterInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord|array $record): LogModel
     {
@@ -73,7 +73,7 @@ class LogbookFormatter implements FormatterInterface
                 $trace = [];
                 foreach ($value->getTrace() as $val) {
                     if (isset($val['file'], $val['line'])) {
-                        $trace[] = $val['file'] . ':' . $val['line'];
+                        $trace[] = $val['file'].':'.$val['line'];
                     }
                 }
                 $this->logModel->setStackTrace($trace);
