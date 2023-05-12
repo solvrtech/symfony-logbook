@@ -112,7 +112,7 @@ class DataBaseCheck extends CheckService
             ->fetchAssociative();
 
         return [
-            'size' => $result['db_size'],
+            'default' => $result['db_size'],
         ];
     }
 
@@ -138,7 +138,7 @@ class DataBaseCheck extends CheckService
             ->fetchAssociative();
 
         return [
-            'size' => array_sum(array_column($result, 'size')),
+            'default' => array_sum(array_column($result, 'size')),
         ];
     }
 }
