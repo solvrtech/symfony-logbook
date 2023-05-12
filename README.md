@@ -48,7 +48,7 @@ security:
     providers:
         // ...
         logbook_provider:
-            id: Solvrtech\Security\LogbookUserProvider
+            id: Solvrtech\Logbook\Security\LogbookUserProvider
 
     firewalls:
         health_check:
