@@ -7,24 +7,29 @@ use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
 use Solvrtech\Logbook\Formatter\LogbookFormatter;
-use Solvrtech\Logbook\Model\LogbookConfig;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class LogbookHandler extends AbstractProcessingHandler
 {
-    private LogbookConfig $logbookConfig;
+    private ?string $apiUrl;
+    private ?string $apiKey;
     private ?string $minLevel;
     private ?string $appVersion;
+    private string $instanceId;
 
     public function __construct(
-        LogbookConfig $logbookConfig,
+        ?string $apiUrl,
+        ?string $apiKey,
         string $minLevel,
-        string $appVersion
+        string $appVersion,
+        string $instanceId = "default",
     ) {
-        $this->logbookConfig = $logbookConfig;
+        $this->apiUrl = $apiUrl;
+        $this->apiKey = $apiKey;
         $this->minLevel = $minLevel;
         $this->appVersion = $appVersion;
+        $this->instanceId = $instanceId;
 
         parent::__construct();
     }
@@ -48,6 +53,7 @@ class LogbookHandler extends AbstractProcessingHandler
                             'Accept' => 'application/json',
                             'x-lb-token' => $this->getAPIkey(),
                             'x-lb-version' => $this->appVersion,
+                            'x-lb-instance-id' => $this->instanceId,
                         ],
                         'body' => json_encode($record['formatted']),
                     ]
@@ -108,11 +114,11 @@ class LogbookHandler extends AbstractProcessingHandler
      */
     private function getAPIUrl(): string
     {
-        if (null === $this->logbookConfig->getApiUrl()) {
+        if (null === $this->apiUrl) {
             throw new Exception('Logbook API url not found.');
         }
 
-        return $this->logbookConfig->getApiUrl();
+        return $this->apiUrl;
     }
 
     /**
@@ -124,11 +130,11 @@ class LogbookHandler extends AbstractProcessingHandler
      */
     private function getAPIkey(): string
     {
-        if (null === $this->logbookConfig->getApiKey()) {
+        if (null === $this->apiKey) {
             throw new Exception('Logbook API key not found.');
         }
 
-        return $this->logbookConfig->getApiKey();
+        return $this->apiKey;
     }
 
     /**
