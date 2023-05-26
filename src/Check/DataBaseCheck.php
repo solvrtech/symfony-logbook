@@ -62,8 +62,7 @@ class DataBaseCheck extends CheckService
 
             return match ($connectionParam['driver']) {
                 "pdo_pgsql" => self::checkPostgresSize($connection, $connection->getDatabase()),
-                "pdo_mysql" => self::checkMySqlSize($connection, $connection->getDatabase()),
-                default => throw new LogbookHealthException(),
+                default => self::checkMySqlSize($connection, $connection->getDatabase()),
             };
         }
 

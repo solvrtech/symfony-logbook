@@ -71,9 +71,11 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
 
         $definition = new Definition('Solvrtech\Logbook\Handler\LogbookHandler');
         $definition->setArguments([
-            $this->logbookConfig,
+            $this->logbookConfig->getApiUrl(),
+            $this->logbookConfig->getApiKey(),
             $this->handler['level'],
             $this->getAppVersion($container),
+            $this->logbookConfig->getInstanceId(),
         ]);
         $container->setParameter($id, $id);
         $container->setDefinition($id, $definition);
