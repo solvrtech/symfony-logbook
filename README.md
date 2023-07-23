@@ -24,9 +24,9 @@ return [
 
 logbook:
     api:
-        # The base url of logbook app.
+        # The base url of the LogBook installation.
         url: "https://logbook.com"
-        # The API key of logbook client app.
+        # The generated API key that LogBook assigned for the Symfony app.
         key: "4eaa39a6ff57c4d5b2cd0a..."
         
     # Instance ID is a unique identifier per instance of your apps.

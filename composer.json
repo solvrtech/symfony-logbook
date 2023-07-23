@@ -1,6 +1,6 @@
 {
     "name": "solvrtech/symfony-logbook",
-    "description": "The Package provide integrate the client app into logbook app.",
+    "description": "This package provides integration with LogBook.",
     "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {

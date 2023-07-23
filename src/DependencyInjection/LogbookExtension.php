@@ -61,7 +61,7 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     }
 
     /**
-     * Build logbook handler
+     * Build LogBook handler
      *
      * @param ContainerBuilder $container
      */
@@ -103,7 +103,7 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     }
 
     /**
-     * Build logbook processor
+     * Build LogBook processor
      *
      * @param ContainerBuilder $container
      */

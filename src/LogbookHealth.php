@@ -12,7 +12,7 @@ class LogbookHealth
     }
 
     /**
-     * Get all available checks.
+     * Returns all available health checks.
      *
      * @return array
      */

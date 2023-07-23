@@ -78,7 +78,7 @@ class LogbookHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Translate log level into int level
+     * Translates log level into int
      *
      * @param string $level
      *
@@ -106,7 +106,7 @@ class LogbookHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Get logbook API url.
+     * Returns LogBook API url.
      *
      * @return string
      *
@@ -115,14 +115,14 @@ class LogbookHandler extends AbstractProcessingHandler
     private function getAPIUrl(): string
     {
         if (null === $this->apiUrl) {
-            throw new Exception('Logbook API url not found.');
+            throw new Exception('Logbook API URL was not found.');
         }
 
         return $this->apiUrl;
     }
 
     /**
-     * Get logbook API key.
+     * Returns LogBook API key.
      *
      * @return string
      *
@@ -131,7 +131,7 @@ class LogbookHandler extends AbstractProcessingHandler
     private function getAPIkey(): string
     {
         if (null === $this->apiKey) {
-            throw new Exception('Logbook API key not found.');
+            throw new Exception('Logbook API key was not found.');
         }
 
         return $this->apiKey;
