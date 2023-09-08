@@ -30,6 +30,9 @@ class Configuration implements ConfigurationInterface
             ->ifTrue(fn($value) => strlen($value) < 5 || strlen($value) > 20)
             ->thenInvalid('The instance_id must be between 5 and 20 characters long.')
             ->end()
+            ->end()
+            ->scalarNode('transport')
+            ->defaultValue('sync://')
             ->end();
 
         return $treeBuilder;

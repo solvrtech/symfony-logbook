@@ -31,6 +31,23 @@ logbook:
         
     # Instance ID is a unique identifier per instance of your apps.
     instance_id: "default"
+    
+    # This configuration defines a logbook transport that can handle logs either synchronously or asynchronously.   
+    transport: 'sync://'
+    
+    # Asynchronous Transport:
+    # - To use Doctrine for Asynchronous log handling:
+    #   transport: 'doctrine://default?batch=15'
+    #
+    # - To use Redis for Asynchronous log handling:
+    #   transport: 'redis://localhost:6379/logs?batch=15'
+```
+
+When you use asynchronous transport to handle the logs, you will need to consume them. You can do this with the
+``logbook:log:consume`` command:
+
+```bash
+php bin/console logbook:log:consume
 ```
 
 ```bash

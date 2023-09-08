@@ -41,3 +41,31 @@ services:
             - { name: controller.service_arguments }
 
     Solvrtech\Logbook\Security\LogbookUserProvider:
+
+    logbook.transport.redis.factory:
+        class: Solvrtech\Logbook\Transport\Redis\RedisTransportFactory
+        tags:
+            - { name: "logbook.transport.factory" }
+
+    logbook.transport.doctrine.factory:
+        class: Solvrtech\Logbook\Transport\Doctrine\DoctrineTransportFactory
+        arguments:
+            - "@doctrine"
+        tags:
+            - { name: "logbook.transport.factory" }
+
+    logbook.transport.sync.factory:
+        class: Solvrtech\Logbook\Transport\Sync\SyncTransportFactory
+        tags:
+            - { name: "logbook.transport.factory" }
+
+    logbook.transport.factory:
+        class: Solvrtech\Logbook\Transport\TransportFactory
+        arguments:
+            $factories: !tagged logbook.transport.factory
+
+    Solvrtech\Logbook\Command\ConsumeCommand:
+        arguments:
+            - "@logbook.transport"
+        tags:
+            - { name: "console.command", command: "logbook:log:consume" }
