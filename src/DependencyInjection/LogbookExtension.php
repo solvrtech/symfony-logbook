@@ -4,13 +4,16 @@ namespace Solvrtech\Logbook\DependencyInjection;
 
 use Exception;
 use ReflectionException;
+use Solvrtech\Logbook\Command\LogConsumeCommand;
 use Solvrtech\Logbook\Model\LogbookConfig;
+use Solvrtech\Logbook\Transport\TransportInterface;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -34,6 +37,8 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('logbook.yaml');
 
+        $this->buildTransport($container);
+
         if (!empty($this->handler)) {
             $this->buildHandler($container);
             $this->buildProcessor($container);
@@ -47,7 +52,8 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $logbookConfig = (new LogbookConfig())
             ->setInstanceId($config['instance_id'])
-            ->setApiKey($config['api']['key']);
+            ->setApiKey($config['api']['key'])
+            ->setTransport($config['transport']);
 
         // check if the last character is a slash and then remove that one
         $url = ('/' === substr($config['api']['url'], -1)) ?
@@ -61,6 +67,26 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     }
 
     /**
+     * Build log transport to handle logs
+     *
+     * @param ContainerBuilder $container
+     */
+    public function buildTransport(ContainerBuilder $container)
+    {
+        $definition = (new Definition(TransportInterface::class))
+            ->setFactory([new Reference('logbook.transport.factory'), 'fromDsn'])
+            ->setArguments([$this->logbookConfig->getTransport()]);
+
+        $transportId = 'logbook.transport';
+        $container->setDefinition($transportId, $definition);
+
+        if ($container->hasDefinition('Solvrtech\Logbook\Command\ConsumeCommand')) {
+            $consumeCommandDefinition = $container->getDefinition('Solvrtech\Logbook\Command\ConsumeCommand');
+            $consumeCommandDefinition->replaceArgument(0, new Reference($transportId));
+        }
+    }
+
+    /**
      * Build LogBook handler
      *
      * @param ContainerBuilder $container
@@ -69,14 +95,17 @@ class LogbookExtension extends Extension implements PrependExtensionInterface
     {
         $id = 'monolog.handler.logbook';
 
+        $config = $this->logbookConfig;
+        $config->offsetSet("appVersion", $this->getAppVersion($container));
+
         $definition = new Definition('Solvrtech\Logbook\Handler\LogbookHandler');
         $definition->setArguments([
-            $this->logbookConfig->getApiUrl(),
-            $this->logbookConfig->getApiKey(),
             $this->handler['level'],
-            $this->getAppVersion($container),
-            $this->logbookConfig->getInstanceId(),
+            $config->toArray(),
+            new Reference('logbook.transport'),
+
         ]);
+
         $container->setParameter($id, $id);
         $container->setDefinition($id, $definition);
     }

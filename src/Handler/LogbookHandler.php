@@ -7,29 +7,22 @@ use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
 use Solvrtech\Logbook\Formatter\LogbookFormatter;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Solvrtech\Logbook\Transport\TransportInterface;
 
 class LogbookHandler extends AbstractProcessingHandler
 {
-    private ?string $apiUrl;
-    private ?string $apiKey;
     private ?string $minLevel;
-    private ?string $appVersion;
-    private string $instanceId;
+    private array $config;
+    private TransportInterface $transport;
 
     public function __construct(
-        ?string $apiUrl,
-        ?string $apiKey,
         string $minLevel,
-        string $appVersion,
-        string $instanceId = "default",
+        array $config,
+        TransportInterface $transport
     ) {
-        $this->apiUrl = $apiUrl;
-        $this->apiKey = $apiKey;
         $this->minLevel = $minLevel;
-        $this->appVersion = $appVersion;
-        $this->instanceId = $instanceId;
+        $this->config = $config;
+        $this->transport = $transport;
 
         parent::__construct();
     }
@@ -37,29 +30,21 @@ class LogbookHandler extends AbstractProcessingHandler
     /**
      * @inheritDoc
      *
-     * @throws Exception|TransportExceptionInterface
+     * @throws Exception
      */
     protected function write(LogRecord|array $record): void
     {
-        $httpClient = HttpClient::create();
         if ($this->getMinLevel() <= $this->toIntLevel($record['level_name'])) {
-            try {
-                $httpClient->request(
-                    'POST',
-                    "{$this->getAPIUrl()}/api/log/save",
-                    [
-                        'headers' => [
-                            'Content-Type' => 'application/json',
-                            'Accept' => 'application/json',
-                            'x-lb-token' => $this->getAPIkey(),
-                            'x-lb-version' => $this->appVersion,
-                            'x-lb-instance-id' => $this->instanceId,
-                        ],
-                        'body' => json_encode($record['formatted']),
-                    ]
-                );
-            } catch (Exception $e) {
-            }
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'x-lb-token' => $this->config['apiKey'],
+                'x-lb-version' => $this->config['appVersion'],
+                'x-lb-instance-id' => $this->config['instanceId'],
+                'url' => $this->config['apiUrl'],
+            ];
+
+            $this->transport->send(json_encode($record['formatted']), $headers);
         }
     }
 
@@ -103,38 +88,6 @@ class LogbookHandler extends AbstractProcessingHandler
         }
 
         return $intLevel;
-    }
-
-    /**
-     * Returns LogBook API url.
-     *
-     * @return string
-     *
-     * @throws Exception
-     */
-    private function getAPIUrl(): string
-    {
-        if (null === $this->apiUrl) {
-            throw new Exception('Logbook API URL was not found.');
-        }
-
-        return $this->apiUrl;
-    }
-
-    /**
-     * Returns LogBook API key.
-     *
-     * @return string
-     *
-     * @throws Exception
-     */
-    private function getAPIkey(): string
-    {
-        if (null === $this->apiKey) {
-            throw new Exception('Logbook API key was not found.');
-        }
-
-        return $this->apiKey;
     }
 
     /**
