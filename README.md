@@ -1,14 +1,18 @@
 # symfony-logbook
 
-Installitation
+### Installitation
+
+To install the `solvrtech/symfony-logbook` bundle, use Composer:
 
 ```bash
 composer require solvrtech/symfony-logbook
 ```
 
-Configuration<br>
-Enable the bundle by adding it to the list of registered bundles
-in the `config/bundles.php` file
+## Configuration
+
+### Enable the Bundle
+
+To enable the bundle, add it to the list of registered bundles in the `config/bundles.php` file:
 
 ```bash
 // config/bundles.php
@@ -18,6 +22,10 @@ return [
     Solvrtech\Logbook\LogbookBundle::class => ['all' => true],
 ]
 ```
+
+### Configure LogBook
+
+Create a configuration file `config/packages/logbook.yaml` to configure LogBook:
 
 ```bash
 // config/packages/logbook.yaml
@@ -43,12 +51,18 @@ logbook:
     #   transport: 'redis://localhost:6379/logs?batch=15'
 ```
 
-When you use asynchronous transport to handle the logs, you will need to consume them. You can do this with the
+### Consume Logs (Asynchronous Transport)
+
+When you use asynchronous transport to handle the logs, you need to consume them. You can do this with the
 ``logbook:log:consume`` command:
 
 ```bash
 php bin/console logbook:log:consume
 ```
+
+### Configure LogBook Routes
+
+Add LogBook health check routes to your Symfony application by including them in `config/routes/logbook.yaml`:
 
 ```bash
 // config/routes/logbook.yaml
@@ -57,6 +71,10 @@ logbook_health:
     resource: "@LogbookBundle/Resources/config/routes.yaml"
     prefix: /logbook-health
 ```
+
+### Configure Security
+
+Update your `config/packages/security.yaml` file to configure security settings related to LogBook:
 
 ```bash
 // config/packages/security.yaml
@@ -73,8 +91,11 @@ security:
             stateless: true
             provider: logbook_provider
             custom_authenticator: logbook.authenticator
-
 ```
+
+### Configure Monolog Handler
+
+To use the LogBook handler with Monolog, update your `config/packages/monolog.yaml` file:
 
 ```bash
 // config/packages/monolog.yaml
@@ -86,6 +107,8 @@ monolog:
             type: stream
             level: debug
 ```
+
+### Configure App Version
 
 ```bash
 // config/services.yaml
