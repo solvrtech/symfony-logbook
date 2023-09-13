@@ -185,7 +185,7 @@ class Connection implements ConnectionInterface
             throw new InvalidArgumentException('Redis connection failed: '.$redis->getLastError());
         }
 
-        if (($params['dbindex'] ?? false) && !$redis->select($params['dbindex'])) {
+        if (null !== $params['dbindex'] && !$redis->select($params['dbindex'])) {
             throw new InvalidArgumentException('Redis connection failed: '.$redis->getLastError());
         }
 
