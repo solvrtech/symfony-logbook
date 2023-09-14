@@ -22,7 +22,7 @@ class RedisTransport extends AbstractAsyncTransport
         try {
             $this->connection->ack($ids);
         } catch (Exception $exception) {
-            throw new TransportException($exception->getMessage(), 0, $exception);
+            throw new TransportException('LogBook Error: '.$exception->getMessage(), 0, $exception);
         }
     }
 }
