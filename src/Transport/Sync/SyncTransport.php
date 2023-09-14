@@ -3,6 +3,7 @@
 namespace Solvrtech\Logbook\Transport\Sync;
 
 use Exception;
+use Solvrtech\Logbook\Exception\TransportException;
 use Solvrtech\Logbook\Transport\TransportInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -28,6 +29,7 @@ class SyncTransport implements TransportInterface
                 ]
             );
         } catch (Exception|TransportExceptionInterface $exception) {
+            throw new TransportException($exception->getMessage(), 0, $exception);
         }
 
         return $body;

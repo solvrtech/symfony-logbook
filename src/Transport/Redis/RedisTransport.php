@@ -2,6 +2,8 @@
 
 namespace Solvrtech\Logbook\Transport\Redis;
 
+use Exception;
+use Solvrtech\Logbook\Exception\TransportException;
 use Solvrtech\Logbook\Transport\AbstractAsyncTransport;
 
 class RedisTransport extends AbstractAsyncTransport
@@ -19,7 +21,8 @@ class RedisTransport extends AbstractAsyncTransport
     {
         try {
             $this->connection->ack($ids);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
+            throw new TransportException($exception->getMessage(), 0, $exception);
         }
     }
 }

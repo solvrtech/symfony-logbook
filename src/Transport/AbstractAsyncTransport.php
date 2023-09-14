@@ -3,6 +3,7 @@
 namespace Solvrtech\Logbook\Transport;
 
 use Exception;
+use Solvrtech\Logbook\Exception\TransportException;
 
 abstract class AbstractAsyncTransport implements TransportInterface, AsyncTransportInterface
 {
@@ -22,6 +23,7 @@ abstract class AbstractAsyncTransport implements TransportInterface, AsyncTransp
         try {
             $this->connection->add($body, $headers);
         } catch (Exception $exception) {
+            throw new TransportException($exception->getMessage(), 0, $exception);
         }
 
         return $body;
