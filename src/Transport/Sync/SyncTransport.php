@@ -29,7 +29,7 @@ class SyncTransport implements TransportInterface
                 ]
             );
         } catch (Exception|TransportExceptionInterface $exception) {
-            throw new TransportException($exception->getMessage(), 0, $exception);
+            throw new TransportException('LogBook Error: '.$exception->getMessage(), 0, $exception);
         }
 
         return $body;
