@@ -2,6 +2,8 @@
 
 namespace Solvrtech\Logbook\Transport\Doctrine;
 
+use Exception;
+use Solvrtech\Logbook\Exception\TransportException;
 use Solvrtech\Logbook\Transport\AbstractAsyncTransport;
 
 class DoctrineTransport extends AbstractAsyncTransport
@@ -19,7 +21,8 @@ class DoctrineTransport extends AbstractAsyncTransport
     {
         try {
             $this->connection->ack();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
+            throw new TransportException($exception->getMessage(), 0, $exception);
         }
     }
 }

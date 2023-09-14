@@ -3,6 +3,7 @@
 namespace Solvrtech\Logbook\Command;
 
 use Exception;
+use Solvrtech\Logbook\Exception\RuntimeException;
 use Solvrtech\Logbook\Transport\AsyncTransportInterface;
 use Solvrtech\Logbook\Transport\Doctrine\DoctrineTransport;
 use Solvrtech\Logbook\Transport\Redis\RedisTransport;
@@ -55,6 +56,7 @@ class ConsumeCommand extends Command
                 try {
                     self::send($batch, $ids);
                 } catch (Exception $exception) {
+                    throw new RuntimeException($exception->getMessage(), 0, $exception);
                 }
 
                 [$batch, $ids] = $this->transport->get();
@@ -97,6 +99,7 @@ class ConsumeCommand extends Command
                 ]
             );
         } catch (Exception|TransportExceptionInterface $exception) {
+            throw new RuntimeException($exception->getMessage(), 0, $exception);
         }
 
         // If using redis transport, delete all sent logs
